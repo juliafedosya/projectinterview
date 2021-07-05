@@ -22,12 +22,12 @@ router.post("/", async (req, res, next) => {
 
     // if we already know conversation id, we need to verify that it belongs to the sender and the recipient
     if (conversationId) {
-      let conversation = await Conversation.findByPk(conversationId);
+      const conversation = await Conversation.findByPk(conversationId);
       if(isValidConversationId(conversation, senderId, recipientId)) {
         const message = await Message.create({ senderId, text, conversationId });
         return res.json({ message, sender });
       }
-      return res.sendStatus(401);
+      return res.sendStatus(403);
     }
     // if we don't have conversation id, find a conversation to make sure it doesn't already exist
     let conversation = await Conversation.findConversation(
