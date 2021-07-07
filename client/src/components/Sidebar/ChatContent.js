@@ -2,10 +2,6 @@ import React from "react";
 import { Box, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-function countUnseenMessages(messages, userId) {
-  return messages.filter((message) => message.senderId === userId && !message.seen).length;
-}
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -19,8 +15,10 @@ const useStyles = makeStyles((theme) => ({
   },
   previewText: {
     fontSize: 12,
-    color: "#9CADC8",
+  },
+  previewTextBold: {
     letterSpacing: -0.17,
+    fontWeight: 'bold'
   },
   notification: {
     height: 20,
@@ -44,7 +42,7 @@ const ChatContent = (props) => {
 
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
-  const unseenCount = countUnseenMessages(conversation.messages, conversation.otherUser.id);
+  const unseenCount = conversation.unseenCount;
 
   return (
     <Box className={classes.root}>
@@ -52,9 +50,11 @@ const ChatContent = (props) => {
         <Typography className={classes.username}>
           {otherUser.username}
         </Typography>
-        <Typography className={classes.previewText}>
+        <Box fontWeight="fontWeightBold">
+        <Typography className={[classes.previewText, unseenCount > 0 ? classes.previewTextBold : '']}>
           {latestMessageText}
         </Typography>
+        </Box>
       </Box>
       {unseenCount > 0 && (
         <Typography className={classes.notification}>{unseenCount}</Typography>

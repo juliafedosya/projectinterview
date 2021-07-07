@@ -27,7 +27,9 @@ class Input extends Component {
   }
 
   handleFocus = () => {
+    if(this.props.unseenCount > 0) {
     this.props.markMsgsSeen(this.props.otherUser.id);
+    }
   }
 
   handleChange = (event) => {

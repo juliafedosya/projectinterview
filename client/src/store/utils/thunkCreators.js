@@ -73,6 +73,14 @@ export const logout = (id) => async (dispatch) => {
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
+    data.forEach(conversation => {
+      conversation.unseenCount = conversation.messages.reduce((accumulator, message) => {
+        if(!message.seen && message.senderId === conversation.otherUser.id) {
+          accumulator++;
+        }
+        return accumulator;
+      }, 0);
+    })
     dispatch(gotConversations(data));
   } catch (error) {
     console.error(error);
@@ -121,7 +129,7 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
 
 const updateMessageToSeen = async (recipientId) => {
   try {
-    await axios.patch("/api/messages", { recipientId });
+    await axios.patch("/api/messages/seen", { recipientId });
   } catch (error) {
     console.error(error);
   }

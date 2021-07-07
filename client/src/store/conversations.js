@@ -3,14 +3,16 @@ import {
   addOnlineUserToStore,
   addSearchedUsersToStore,
   removeOfflineUserFromStore,
-  addMessageToStore,
-  markMessagesReadInStore
+  addSentMessageToStore,
+  addReceivedMessageToStore,
+  markMessagesSeenInStore
 } from "./utils/reducerFunctions";
 
 // ACTIONS
 
 const GET_CONVERSATIONS = "GET_CONVERSATIONS";
 const SET_MESSAGE = "SET_MESSAGE";
+const RECEIVE_NEW_MESSAGE = "RECEIVE_NEW_MESSAGE";
 const ADD_ONLINE_USER = "ADD_ONLINE_USER";
 const REMOVE_OFFLINE_USER = "REMOVE_OFFLINE_USER";
 const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
@@ -31,6 +33,13 @@ export const setNewMessage = (message, sender) => {
   return {
     type: SET_MESSAGE,
     payload: { message, sender: sender || null },
+  };
+};
+
+export const receiveNewMessage = (message, sender) => {
+  return {
+    type: RECEIVE_NEW_MESSAGE,
+    payload: { message, sender },
   };
 };
 
@@ -83,7 +92,9 @@ const reducer = (state = [], action) => {
     case GET_CONVERSATIONS:
       return action.conversations;
     case SET_MESSAGE:
-      return addMessageToStore(state, action.payload);
+      return addSentMessageToStore(state, action.payload);
+    case RECEIVE_NEW_MESSAGE:
+      return addReceivedMessageToStore(state, action.payload);
     case ADD_ONLINE_USER: {
       return addOnlineUserToStore(state, action.id);
     }
@@ -101,7 +112,7 @@ const reducer = (state = [], action) => {
         action.payload.newMessage
       );
     case MARK_MESSAGES_SEEN:
-      return markMessagesReadInStore(state, action.payload);
+      return markMessagesSeenInStore(state, action.payload);
     default:
       return state;
   }

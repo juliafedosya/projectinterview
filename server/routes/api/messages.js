@@ -57,7 +57,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.patch("/", async (req, res, next) => {
+router.patch("/seen", async (req, res, next) => {
   try {
     if (!req.user) {
       return res.sendStatus(401);
@@ -84,7 +84,7 @@ router.patch("/", async (req, res, next) => {
       }
     );
 
-    res.sendStatus(200);
+    res.sendStatus(204);
   } catch (error) {
     next(error);
   }
