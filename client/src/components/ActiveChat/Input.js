@@ -3,6 +3,7 @@ import { FormControl, FilledInput } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { postMessage } from "../../store/utils/thunkCreators";
+import { markMsgsSeen } from "../../store/utils/thunkCreators";
 
 const styles = {
   root: {
@@ -23,6 +24,10 @@ class Input extends Component {
     this.state = {
       text: "",
     };
+  }
+
+  handleFocus = () => {
+    this.props.markMsgsSeen(this.props.otherUser.id);
   }
 
   handleChange = (event) => {
@@ -58,6 +63,7 @@ class Input extends Component {
             value={this.state.text}
             name="text"
             onChange={this.handleChange}
+            onFocus={this.handleFocus}
           />
         </FormControl>
       </form>
@@ -76,6 +82,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     postMessage: (message) => {
       dispatch(postMessage(message));
+    },
+    markMsgsSeen: (userId) => {
+      dispatch(markMsgsSeen(userId));
     },
   };
 };
