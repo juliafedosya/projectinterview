@@ -1,4 +1,4 @@
-export const addMessageToStore = (state, payload) => {
+export const addSentMessageToStore = (state, payload) => {
   const { message, sender } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
   if (sender !== null) {
@@ -22,6 +22,42 @@ export const addMessageToStore = (state, payload) => {
       return convo;
     }
   });
+};
+
+export const addReceivedMessageToStore = (state, payload) => {
+  const { message, sender } = payload;
+
+  const existingConvoIdx = state.findIndex(c => c.id === message.conversationId)
+
+  // if conversation already exists, lift it up and update
+  if (existingConvoIdx !== -1) {
+    const updatedConvo = {
+      ...state[existingConvoIdx],
+      messages: [...state[existingConvoIdx].messages, message],
+      latestMessageText: message.text,
+      unseenCount: state[existingConvoIdx].unseenCount + 1
+    }
+
+    const nextState = [updatedConvo];
+    for (const conversation of state) {
+      if (conversation.id !== message.conversationId) nextState.push(conversation);
+    }
+    return nextState;
+  }
+
+  // create new conversation and put it first
+  const newConvo = {
+    id: message.conversationId,
+    otherUser: sender,
+    messages: [message],
+    latestMessageText: message.text,
+    unseenCount: 1
+  };
+
+  return [
+    newConvo,
+    ...state
+  ]
 };
 
 export const addOnlineUserToStore = (state, id) => {
@@ -79,5 +115,20 @@ export const addNewConvoToStore = (state, recipientId, message) => {
     } else {
       return convo;
     }
+  });
+};
+
+export const markMessagesSeenInStore = (state, { recipientId }) => {
+  return state.map((convo) => {
+    if (convo.otherUser.id === recipientId) {
+      const convoCopy = { ...convo };
+      convoCopy.messages.forEach((message) => {
+        message.seen = true;
+      });
+      convoCopy.unseenCount = 0;
+
+      return convoCopy;
+    }
+    return convo;
   });
 };

@@ -5,6 +5,7 @@ import {
   addConversation,
   setNewMessage,
   setSearchedUsers,
+  markMessagesSeen,
 } from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
@@ -72,6 +73,14 @@ export const logout = (id) => async (dispatch) => {
 export const fetchConversations = () => async (dispatch) => {
   try {
     const { data } = await axios.get("/api/conversations");
+    data.forEach(conversation => {
+      conversation.unseenCount = conversation.messages.reduce((accumulator, message) => {
+        if(!message.seen && message.senderId === conversation.otherUser.id) {
+          accumulator++;
+        }
+        return accumulator;
+      }, 0);
+    })
     dispatch(gotConversations(data));
   } catch (error) {
     console.error(error);
@@ -113,6 +122,23 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   try {
     const { data } = await axios.get(`/api/users/${searchTerm}`);
     dispatch(setSearchedUsers(data));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const updateMessageToSeen = async (recipientId) => {
+  try {
+    await axios.patch("/api/messages/seen", { recipientId });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const markMsgsSeen = (recipientId) => async (dispatch) => {
+  try {
+    await updateMessageToSeen(recipientId);
+    dispatch(markMessagesSeen(recipientId));
   } catch (error) {
     console.error(error);
   }
