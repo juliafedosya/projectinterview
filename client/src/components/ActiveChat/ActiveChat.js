@@ -1,8 +1,21 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box } from "@material-ui/core";
-import { Input, Header, Messages } from "./index";
+import { Input, Header, Messages, SeenBubble } from "./index";
 import { connect } from "react-redux";
+
+function isLastMessageSeen(conversation, user) {
+  if(conversation) {
+    const messages = conversation.messages;
+    if(messages && user) {
+      const lastMessage = messages[messages.length -1];
+      if(lastMessage.senderId === user.id) {
+        return lastMessage.seen;
+      }
+    }
+  }
+  return false;
+}
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -24,7 +37,8 @@ const ActiveChat = (props) => {
   const classes = useStyles();
   const { user } = props;
   const conversation = props.conversation || {};
-
+  const displaySeenBubble = isLastMessageSeen(conversation, user);
+  console.log( " I am here");
   return (
     <Box className={classes.root}>
       {conversation.otherUser && (
@@ -34,11 +48,16 @@ const ActiveChat = (props) => {
             online={conversation.otherUser.online || false}
           />
           <Box className={classes.chatContainer}>
-            <Messages
-              messages={conversation.messages}
-              otherUser={conversation.otherUser}
-              userId={user.id}
-            />
+            <Box>
+              <Messages
+                messages={conversation.messages}
+                otherUser={conversation.otherUser}
+                userId={user.id}
+              />
+              {displaySeenBubble && (<SeenBubble
+                otherUser = {conversation.otherUser}>
+              </SeenBubble>)}
+            </Box>
             <Input
               otherUser={conversation.otherUser}
               conversationId={conversation.id}

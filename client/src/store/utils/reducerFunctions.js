@@ -38,16 +38,11 @@ export const addReceivedMessageToStore = (state, payload) => {
       unseenCount: state[existingConvoIdx].unseenCount + 1
     }
 
-    return [
-      updatedConvo,
-      ...state.slice(
-        0,
-        existingConvoIdx,
-      ),
-      ...state.slice(
-        existingConvoIdx + 1
-      )
-    ]
+    const nextState = [updatedConvo];
+    for (const conversation of state) {
+      if (conversation.id !== message.conversationId) nextState.push(conversation);
+    }
+    return nextState;
   }
 
   // create new conversation and put it first
