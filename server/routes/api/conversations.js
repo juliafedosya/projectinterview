@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { User, Conversation, Message } = require("../../db/models");
 const { Op } = require("sequelize");
-const onlineUsers = require("../../onlineUsers");
+const { onlineUsers } = require("../../onlineUsers");
 
 function compareConversations(convA, convB) {
   const lastMsgCreatedAtA = new Date(convA.messages[convA.messages.length - 1].createdAt).getTime();
@@ -71,7 +71,7 @@ router.get("/", async (req, res, next) => {
       }
 
       // set property for online status of the other user
-      if (onlineUsers.includes(convoJSON.otherUser.id)) {
+      if (onlineUsers[convoJSON.otherUser.id]) {
         convoJSON.otherUser.online = true;
       } else {
         convoJSON.otherUser.online = false;
