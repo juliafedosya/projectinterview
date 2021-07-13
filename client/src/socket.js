@@ -4,6 +4,7 @@ import {
   removeOfflineUser,
   addOnlineUser,
   receiveNewMessage,
+  markSentMessagesAsSeen
 } from "./store/conversations";
 
 export default function createSocket(token) {
@@ -22,6 +23,9 @@ export default function createSocket(token) {
     });
     socket.on("new-message", (data) => {
       store.dispatch(receiveNewMessage(data.message, data.sender));
+    });
+    socket.on("messages-seen", (data) => {
+      store.dispatch(markSentMessagesAsSeen(data.recipientId, data.conversationId));
     });
   });
 

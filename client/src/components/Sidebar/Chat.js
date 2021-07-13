@@ -1,10 +1,11 @@
-import React, { Component } from "react";
+import React, { useCallback} from "react";
 import { Box } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { withStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
 import { markMsgsSeen } from "../../store/utils/thunkCreators";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
+
 
 const styles = {
   root: {
@@ -20,43 +21,31 @@ const styles = {
   },
 };
 
-class Chat extends Component {
-  handleClick = async (conversation) => {
-    await this.props.setActiveChat(conversation.otherUser.username);
-    if (conversation.unseenCount > 0) {
-      await this.props.markMsgsSeen(conversation.otherUser.id);
-    }
-  };
+const Chat = (props) => {
+  const classes = props.classes;
+  const otherUser = props.conversation.otherUser;
+  const dispatch = useDispatch();
 
-  render() {
-    const { classes } = this.props;
-    const otherUser = this.props.conversation.otherUser;
-    return (
-      <Box
-        onClick={() => this.handleClick(this.props.conversation)}
-        className={classes.root}
-      >
-        <BadgeAvatar
-          photoUrl={otherUser.photoUrl}
-          username={otherUser.username}
-          online={otherUser.online}
-          sidebar={true}
-        />
-        <ChatContent conversation={this.props.conversation} />
-      </Box>
-    );
-  }
+  const handleClick = useCallback((conversation) => {
+    dispatch(setActiveChat(conversation.otherUser.username));
+    if (conversation.unseenCount > 0) {
+      dispatch(markMsgsSeen(conversation.otherUser.id, conversation.id));
+    }
+  }, [dispatch]);
+  return (
+    <Box
+      onClick={() => handleClick(props.conversation)}
+      className={classes.root}
+    >
+      <BadgeAvatar
+        photoUrl={otherUser.photoUrl}
+        username={otherUser.username}
+        online={otherUser.online}
+        sidebar={true}
+      />
+      <ChatContent conversation={props.conversation} />
+    </Box>
+  );
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setActiveChat: (id) => {
-      dispatch(setActiveChat(id));
-    },
-    markMsgsSeen: (id) => {
-      dispatch(markMsgsSeen(id));
-    }
-  };
-};
-
-export default connect(null, mapDispatchToProps)(withStyles(styles)(Chat));
+export default withStyles(styles)(Chat);

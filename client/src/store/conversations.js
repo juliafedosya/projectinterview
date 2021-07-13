@@ -5,7 +5,8 @@ import {
   removeOfflineUserFromStore,
   addSentMessageToStore,
   addReceivedMessageToStore,
-  markMessagesSeenInStore
+  markMessagesSeenInStore,
+  markMessagesSentSeenInStore
 } from "./utils/reducerFunctions";
 
 // ACTIONS
@@ -19,6 +20,7 @@ const SET_SEARCHED_USERS = "SET_SEARCHED_USERS";
 const CLEAR_SEARCHED_USERS = "CLEAR_SEARCHED_USERS";
 const ADD_CONVERSATION = "ADD_CONVERSATION";
 const MARK_MESSAGES_SEEN = "MARK_MESSAGES_SEEN";
+const MARK_SENT_MESSAGES_SEEN = "MARK_SENT_MESSAGES_SEEN";
 
 // ACTION CREATORS
 
@@ -85,6 +87,13 @@ export const markMessagesSeen = (recipientId) => {
   };
 };
 
+export const markSentMessagesAsSeen = (recipientId, conversationId) => {
+  return {
+    type : MARK_SENT_MESSAGES_SEEN,
+    payload: { recipientId, conversationId },
+  }
+}
+
 // REDUCER
 
 const reducer = (state = [], action) => {
@@ -113,6 +122,8 @@ const reducer = (state = [], action) => {
       );
     case MARK_MESSAGES_SEEN:
       return markMessagesSeenInStore(state, action.payload);
+    case MARK_SENT_MESSAGES_SEEN:
+      return markMessagesSentSeenInStore(state, action.payload);
     default:
       return state;
   }
