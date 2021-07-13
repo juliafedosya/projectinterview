@@ -1,2 +1,3 @@
-const onlineUsers = [];
-module.exports = onlineUsers;
+const onlineUsers = {};
+
+module.exports.onlineUsers = onlineUsers;

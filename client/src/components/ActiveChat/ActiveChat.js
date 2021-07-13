@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 function isLastMessageSeen(conversation, user) {
   if(conversation) {
     const messages = conversation.messages;
-    if(messages && user) {
+    if(messages?.length > 0 && user) {
       const lastMessage = messages[messages.length -1];
       if(lastMessage.senderId === user.id) {
         return lastMessage.seen;
@@ -38,7 +38,6 @@ const ActiveChat = (props) => {
   const { user } = props;
   const conversation = props.conversation || {};
   const displaySeenBubble = isLastMessageSeen(conversation, user);
-  console.log( " I am here");
   return (
     <Box className={classes.root}>
       {conversation.otherUser && (
