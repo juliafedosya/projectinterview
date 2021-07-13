@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 function isLastMessageSeen(conversation, user) {
   if(conversation) {
     const messages = conversation.messages;
-    if(messages && messages.length > 0 && user) {
+    if(messages?.length > 0 && user) {
       const lastMessage = messages[messages.length -1];
       if(lastMessage.senderId === user.id) {
         return lastMessage.seen;
