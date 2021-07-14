@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { withStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Grid, CssBaseline, Button } from "@material-ui/core";
@@ -7,15 +6,16 @@ import { SidebarContainer } from "./Sidebar";
 import { ActiveChat } from "./ActiveChat";
 import { logout, fetchConversations } from "../store/utils/thunkCreators";
 import { clearOnLogout } from "../store/index";
+import { makeStyles } from "@material-ui/core/styles";
 
-const styles = {
+const useStyles = makeStyles(() => ({
   root: {
     height: "97vh",
-  },
-};
+  }
+}));
 
 const Home = (props) => {
-  const classes = props.classes;
+  const classes = useStyles();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { user } = useSelector((state) => ({
     user: state.user,
@@ -59,4 +59,4 @@ const Home = (props) => {
   );
 }
 
-export default withStyles(styles)(Home);
+export default Home;

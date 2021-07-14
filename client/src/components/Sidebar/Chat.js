@@ -1,13 +1,13 @@
 import React, { useCallback} from "react";
 import { Box } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
-import { withStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
 import { markMsgsSeen } from "../../store/utils/thunkCreators";
 import { useDispatch } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
 
 
-const styles = {
+const useStyles = makeStyles(() => ({
   root: {
     borderRadius: 8,
     height: 80,
@@ -19,10 +19,10 @@ const styles = {
       cursor: "grab",
     },
   },
-};
+}));
 
 const Chat = (props) => {
-  const classes = props.classes;
+  const classes = useStyles();
   const otherUser = props.conversation.otherUser;
   const dispatch = useDispatch();
 
@@ -48,4 +48,4 @@ const Chat = (props) => {
   );
 }
 
-export default withStyles(styles)(Chat);
+export default Chat;
