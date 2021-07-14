@@ -20,6 +20,9 @@ const styles = {
 
 const Input = (props) => {
   const classes = props.classes;
+  const conversationId = props.conversationId;
+  const otherUser = props.otherUser;
+  const unseenCount = props.unseenCount;
   const [text, setText] = useState("");
   const dispatch = useDispatch();
   const { user } = useSelector((state) => ({
@@ -27,10 +30,10 @@ const Input = (props) => {
   }));
 
   const handleFocus = useCallback(() => {
-    if(props.unseenCount > 0) {
-      dispatch(markMsgsSeen(props.otherUser.id, props.conversationId));
+    if(unseenCount > 0) {
+      dispatch(markMsgsSeen(otherUser.id, conversationId));
     }
-  }, [props, dispatch]);
+  }, [unseenCount, otherUser, conversationId, dispatch]);
 
   const handleChange = useCallback((event) => {
     setText(event.target.value);
@@ -41,13 +44,13 @@ const Input = (props) => {
     // add sender user info if posting to a brand new convo, so that the other user will have access to username, profile pic, etc.
     const reqBody = {
       text: event.target.text.value,
-      recipientId: props.otherUser.id,
-      conversationId: props.conversationId,
-      sender: props.conversationId ? null : user,
+      recipientId: otherUser.id,
+      conversationId: conversationId,
+      sender: conversationId ? null : user,
     };
     dispatch(postMessage(reqBody));
     setText("");
-  }, [props, setText, dispatch, user]);
+  }, [otherUser, conversationId, setText, dispatch, user]);
 
   return (
     <form className={classes.root} onSubmit={handleSubmit}>
