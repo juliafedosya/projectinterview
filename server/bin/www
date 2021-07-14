@@ -70,6 +70,17 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("messages-seen", (data) => {
+    if(onlineUsers[data.recipientId]) {
+      onlineUsers[data.recipientId].connectionIds.forEach(connId => {
+        socket.to(connId).emit("messages-seen", {
+          recipientId: data.recipientId,
+          conversationId: data.conversationId
+        })
+      })
+    }
+  })
+
   socket.on("logout", (id) => {
     if (onlineUsers[id]) {
       const connectionIdx = onlineUsers[id].connectionIds.indexOf(socket.id)

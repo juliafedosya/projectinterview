@@ -107,6 +107,13 @@ const sendMessage = (data, body) => {
   });
 };
 
+const notifyMessagesSeen = (recipientId, conversationId) => {
+  socket.emit("messages-seen", {
+    recipientId: recipientId,
+    conversationId: conversationId
+  })
+};
+
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => async (dispatch) => {
@@ -142,10 +149,11 @@ const updateMessageToSeen = async (recipientId) => {
   }
 };
 
-export const markMsgsSeen = (recipientId) => async (dispatch) => {
+export const markMsgsSeen = (recipientId, conversationId) => async (dispatch) => {
   try {
     await updateMessageToSeen(recipientId);
     dispatch(markMessagesSeen(recipientId));
+    notifyMessagesSeen(recipientId, conversationId);
   } catch (error) {
     console.error(error);
   }

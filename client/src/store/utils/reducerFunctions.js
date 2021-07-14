@@ -132,3 +132,20 @@ export const markMessagesSeenInStore = (state, { recipientId }) => {
     return convo;
   });
 };
+
+export const markMessagesSentSeenInStore = (state, { recipientId, conversationId }) => {
+  return state.map((convo) => {
+    if (convo.id === conversationId) {
+      const convoCopy = { ...convo };
+      convoCopy.messages.forEach((message) => {
+        if(message.senderId === recipientId) {
+          message.seen = true;
+        }
+      });
+      convoCopy.unseenCount = 0;
+
+      return convoCopy;
+    }
+    return convo;
+  });
+};
