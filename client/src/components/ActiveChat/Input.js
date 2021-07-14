@@ -17,12 +17,7 @@ const styles = {
     marginBottom: 20,
   },
 };
-
-const Input = (props) => {
-  const classes = props.classes;
-  const conversationId = props.conversationId;
-  const otherUser = props.otherUser;
-  const unseenCount = props.unseenCount;
+const Input = ({classes, conversationId, otherUser, unseenCount}) => {
   const [text, setText] = useState("");
   const dispatch = useDispatch();
   const { user } = useSelector((state) => ({

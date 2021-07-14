@@ -107,7 +107,7 @@ const sendMessage = (data, body) => {
   });
 };
 
-const makeMessagesSeen = (recipientId, conversationId) => {
+const notifyMessagesSeen = (recipientId, conversationId) => {
   socket.emit("messages-seen", {
     recipientId: recipientId,
     conversationId: conversationId
@@ -153,7 +153,7 @@ export const markMsgsSeen = (recipientId, conversationId) => async (dispatch) =>
   try {
     await updateMessageToSeen(recipientId);
     dispatch(markMessagesSeen(recipientId));
-    makeMessagesSeen(recipientId, conversationId);
+    notifyMessagesSeen(recipientId, conversationId);
   } catch (error) {
     console.error(error);
   }
